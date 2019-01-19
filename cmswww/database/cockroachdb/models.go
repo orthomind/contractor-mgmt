@@ -70,7 +70,7 @@ func (i Identity) TableName() string {
 
 type Invoice struct {
 	Token              string    `gorm:"primary_key"`
-	User               User      `gorm:"foreignkey:UserID"`
+	User               User      `gorm:"foreignkey:UserID;association_foreignkey:ID"`
 	UserID             uuid.UUID `gorm:"not_null"`
 	Username           string    `gorm:"-"` // Only populated when reading from the database
 	Month              uint      `gorm:"not_null"`

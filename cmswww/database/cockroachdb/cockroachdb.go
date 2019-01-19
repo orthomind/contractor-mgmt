@@ -416,5 +416,9 @@ func New(dataDir, dbName, username, host string) (*cockroachdb, error) {
 		&InvoicePayment{},
 	)
 
+	// Add foreign key constraints
+	c.db.Model(&Invoice{}).AddIndex("idx_invoice_user_id", "user_id")
+	c.db.Model(&Invoice{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+
 	return &c, nil
 }
