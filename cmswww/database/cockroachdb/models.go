@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/lib/pq"
@@ -17,8 +18,15 @@ const (
 	tableNameInvoicePayment = "invoice_payments"
 )
 
+type Model struct {
+	ID        uuid.UUID `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time `sql:"index"`
+}
+
 type User struct {
-	gorm.Model
+	Model
 	Email                                     string         `gorm:"type:varchar(100);unique_index"`
 	Username                                  sql.NullString `gorm:"unique"`
 	HashedPassword                            sql.NullString
@@ -49,7 +57,8 @@ func (u User) TableName() string {
 
 type Identity struct {
 	gorm.Model
-	UserID      uint           `gorm:"not_null"`
+	User        User           `gorm:"foreignkey:UserID"`
+	UserID      uuid.UUID      `gorm:"not_null"`
 	Key         sql.NullString `gorm:"unique"`
 	Activated   pq.NullTime
 	Deactivated pq.NullTime
@@ -61,7 +70,8 @@ func (i Identity) TableName() string {
 
 type Invoice struct {
 	Token              string    `gorm:"primary_key"`
-	UserID             uint      `gorm:"not_null"`
+	User               User      `gorm:"foreignkey:UserID"`
+	UserID             uuid.UUID `gorm:"not_null"`
 	Username           string    `gorm:"-"` // Only populated when reading from the database
 	Month              uint      `gorm:"not_null"`
 	Year               uint      `gorm:"not_null"`

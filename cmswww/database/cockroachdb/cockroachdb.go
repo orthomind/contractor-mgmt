@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/badoux/checkmail"
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 
@@ -121,7 +122,7 @@ func (c *cockroachdb) GetUserByUsername(username string) (*database.User, error)
 // GetUserById returns a user record given its id, if found in the database.
 //
 // GetUserById satisfies the backend interface.
-func (c *cockroachdb) GetUserById(id uint64) (*database.User, error) {
+func (c *cockroachdb) GetUserById(id uuid.UUID) (*database.User, error) {
 	var user User
 	result := c.db.Preload("Identities").First(&user, id)
 	if result.Error != nil {
@@ -137,17 +138,17 @@ func (c *cockroachdb) GetUserById(id uint64) (*database.User, error) {
 // GetUserIdByPublicKey returns a user record given its id, if found in the database.
 //
 // GetUserIdByPublicKey satisfies the backend interface.
-func (c *cockroachdb) GetUserIdByPublicKey(publicKey string) (uint64, error) {
+func (c *cockroachdb) GetUserIdByPublicKey(publicKey string) (uuid.UUID, error) {
 	var id Identity
 	result := c.db.Where("key = ?", publicKey).First(&id)
 	if result.Error != nil {
 		if gorm.IsRecordNotFoundError(result.Error) {
-			return 0, database.ErrUserNotFound
+			return uuid.UUID{}, database.ErrUserNotFound
 		}
-		return 0, result.Error
+		return uuid.UUID{}, result.Error
 	}
 
-	return uint64(id.UserID), nil
+	return id.UserID, nil
 }
 
 // Executes a callback on every user in the database.

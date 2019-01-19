@@ -79,7 +79,7 @@ func validateStatusTransition(
 
 func (c *cmswww) createInvoiceReview(invoice *database.Invoice) (*v1.InvoiceReview, error) {
 	invoiceReview := v1.InvoiceReview{
-		UserID:    strconv.FormatUint(invoice.UserID, 10),
+		UserID:    invoice.UserID.String(),
 		Username:  invoice.Username,
 		Token:     invoice.Token,
 		LineItems: make([]v1.InvoiceReviewLineItem, 0),
@@ -138,7 +138,7 @@ func (c *cmswww) createInvoiceReview(invoice *database.Invoice) (*v1.InvoiceRevi
 
 func (c *cmswww) createInvoicePayment(dbInvoice *database.Invoice, dcrUSDRate float64) (*v1.InvoicePayment, error) {
 	invoicePayment := v1.InvoicePayment{
-		UserID:   strconv.FormatUint(dbInvoice.UserID, 10),
+		UserID:   dbInvoice.UserID.String(),
 		Username: dbInvoice.Username,
 		Token:    dbInvoice.Token,
 	}
@@ -600,7 +600,7 @@ func (c *cmswww) HandleUserInvoices(
 	}
 
 	invoices, numMatches, err := c.getInvoices(database.InvoicesRequest{
-		UserID:    strconv.FormatUint(user.ID, 10),
+		UserID:    user.ID.String(),
 		StatusMap: statusMap,
 		Page:      int(ui.Page),
 	})
