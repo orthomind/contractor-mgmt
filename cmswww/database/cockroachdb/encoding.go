@@ -255,7 +255,7 @@ func EncodeInvoiceChange(dbInvoiceChange *database.InvoiceChange) *InvoiceChange
 func EncodeInvoicePayment(dbInvoicePayment *database.InvoicePayment) *InvoicePayment {
 	invoicePayment := InvoicePayment{}
 
-	invoicePayment.ID = uint(dbInvoicePayment.ID)
+	invoicePayment.ID = dbInvoicePayment.ID
 	invoicePayment.InvoiceToken = dbInvoicePayment.InvoiceToken
 	invoicePayment.Address = dbInvoicePayment.Address
 	invoicePayment.Amount = uint(dbInvoicePayment.Amount)
@@ -321,7 +321,7 @@ func DecodeInvoiceChange(invoiceChange *InvoiceChange) *database.InvoiceChange {
 func DecodeInvoicePayment(invoicePayment *InvoicePayment) *database.InvoicePayment {
 	dbInvoicePayment := database.InvoicePayment{}
 
-	dbInvoicePayment.ID = uint64(invoicePayment.ID)
+	dbInvoicePayment.ID = invoicePayment.ID
 	dbInvoicePayment.InvoiceToken = invoicePayment.InvoiceToken
 	dbInvoicePayment.Address = invoicePayment.Address
 	dbInvoicePayment.Amount = uint64(invoicePayment.Amount)

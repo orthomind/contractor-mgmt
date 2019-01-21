@@ -134,7 +134,7 @@ type InvoiceChange struct {
 }
 
 type InvoicePayment struct {
-	ID           uint64
+	ID           uuid.UUID
 	InvoiceToken string
 	Address      string
 	Amount       uint64

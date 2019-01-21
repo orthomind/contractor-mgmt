@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/lib/pq"
 )
@@ -101,7 +100,7 @@ func (i Invoice) TableName() string {
 }
 
 type InvoiceChange struct {
-	gorm.Model
+	Model
 	InvoiceToken   string
 	AdminPublicKey string
 	NewStatus      uint
@@ -113,7 +112,7 @@ func (i InvoiceChange) TableName() string {
 }
 
 type InvoicePayment struct {
-	gorm.Model
+	Model
 	InvoiceToken string
 	Address      string `gorm:"not_null"`
 	Amount       uint   `gorm:"not_null"`
