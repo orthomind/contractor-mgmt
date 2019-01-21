@@ -56,7 +56,7 @@ func (u User) TableName() string {
 }
 
 type Identity struct {
-	gorm.Model
+	Model
 	User        User           `gorm:"foreignkey:UserID"`
 	UserID      uuid.UUID      `gorm:"not_null"`
 	Key         sql.NullString `gorm:"unique"`

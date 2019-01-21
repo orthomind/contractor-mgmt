@@ -151,7 +151,7 @@ func DecodeUser(user *User) (*database.User, error) {
 func EncodeIdentity(dbID *database.Identity) *Identity {
 	id := Identity{}
 
-	id.ID = uint(dbID.ID)
+	id.ID = dbID.ID
 	id.UserID = dbID.UserID
 
 	if len(dbID.Key) != 0 {
@@ -176,7 +176,7 @@ func EncodeIdentity(dbID *database.Identity) *Identity {
 func DecodeIdentity(id *Identity) (*database.Identity, error) {
 	dbID := database.Identity{}
 
-	dbID.ID = uint64(id.ID)
+	dbID.ID = id.ID
 	dbID.UserID = id.UserID
 
 	if id.Key.Valid {

@@ -93,7 +93,7 @@ type User struct {
 // Identity wraps an ed25519 public key and timestamps to indicate if it is
 // active.  If deactivated != 0 then the key is no longer valid.
 type Identity struct {
-	ID          uint64
+	ID          uuid.UUID
 	UserID      uuid.UUID
 	Key         [identity.PublicKeySize]byte
 	Activated   int64
