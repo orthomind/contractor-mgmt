@@ -18,9 +18,9 @@ const (
 )
 
 type Model struct {
-	ID        uuid.UUID `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        uuid.UUID  `sql:"type:uuid;primary_key;default:gen_random_uuid()"`
+	CreatedAt *time.Time `sql:"not null;DEFAULT:current_timestamp"`
+	UpdatedAt *time.Time `sql:"not null;DEFAULT:current_timestamp"`
 	DeletedAt *time.Time `sql:"index"`
 }
 
