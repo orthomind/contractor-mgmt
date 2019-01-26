@@ -298,7 +298,7 @@ func (c *cmswww) HandleLogin(
 }
 
 func (c *cmswww) CreateLoginReply(user *database.User, lastLogin int64) (*v1.LoginReply, error) {
-	activeIdentity, ok := database.ActiveIdentityString(user.Identities)
+	activeIdentity, ok := database.ActiveIdentityString2(user.ID, c.db)
 	if !ok {
 		activeIdentity = ""
 	}

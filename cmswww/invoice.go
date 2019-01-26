@@ -654,8 +654,13 @@ func (c *cmswww) HandleSetInvoiceStatus(
 		Reason:    sis.Reason,
 	}
 
+	identity, err := c.db.GetActiveIdentity(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
 	var ok bool
-	changes.AdminPublicKey, ok = database.ActiveIdentityString(user.Identities)
+	changes.AdminPublicKey, ok = database.ActiveIdentityString2(user.ID, c.db)
 	if !ok {
 		return nil, fmt.Errorf("invalid admin identity: %v",
 			user.ID)

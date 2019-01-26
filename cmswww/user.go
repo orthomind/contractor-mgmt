@@ -202,8 +202,12 @@ func (c *cmswww) HandleRegister(
 	id := database.Identity{}
 	id.Activated = time.Now().Unix()
 	id.Key = [identity.PublicKeySize]byte{}
+	id.UserID = user.ID
 	copy(id.Key[:], pk)
-	user.Identities = append(user.Identities, id)
+	err = c.db.AddIdentity(id)
+	if err != nil {
+		return nil, err
+	}
 
 	err = c.db.UpdateUser(user)
 	return &v1.RegisterReply{}, err

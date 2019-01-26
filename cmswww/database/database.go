@@ -51,6 +51,12 @@ type Database interface {
 	GetAllUsers(callbackFn func(u *User)) error              // Iterate all users
 	GetUsers(username string, page int) ([]User, int, error) // Returns a list of users and total count that match the provided username.
 
+	// Identity functions
+	GetActiveIdentity(uuid.UUID) (*Identity, error)  // Returns the active identity (if any) of user for provided user ID
+	GetPendingIdentity(uuid.UUID) (*Identity, error) // Returns the currently unactivated identity of user for provided user ID that's awaiting approval
+	ActivateIdentity(uuid.UUID) error                // Activates the identity with provided ID
+	AddIdentity(Identity) error                      // Adds identity for user ID
+
 	// Invoice functions
 	CreateInvoice(*Invoice) error                        // Create new invoice
 	UpdateInvoice(*Invoice) error                        // Update existing invoice
@@ -86,8 +92,6 @@ type User struct {
 	FailedLoginAttempts                       uint64
 	PaymentAddressIndex                       uint64
 	EmailNotifications                        uint64
-
-	Identities []Identity
 }
 
 // Identity wraps an ed25519 public key and timestamps to indicate if it is
@@ -168,4 +172,15 @@ func ActiveIdentity(ids []Identity) ([identity.PublicKeySize]byte, bool) {
 func ActiveIdentityString(i []Identity) (string, bool) {
 	key, ok := ActiveIdentity(i)
 	return hex.EncodeToString(key[:]), ok
+}
+
+// ActiveIdentityString2 returns a string representation of the current active
+// key.  If there is no active valid key the call returns all 0s and false.
+func ActiveIdentityString2(userID uuid.UUID, d Database) (string, bool) {
+	identity, err := d.GetActiveIdentity(userID)
+	if err != nil || identity == nil {
+		return "", false
+	}
+
+	return hex.EncodeToString(identity.Key[:]), true
 }

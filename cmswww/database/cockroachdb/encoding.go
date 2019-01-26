@@ -69,10 +69,6 @@ func EncodeUser(dbUser *database.User) *User {
 		user.LastLogin.Time = time.Unix(dbUser.LastLogin, 0)
 	}
 
-	for _, dbID := range dbUser.Identities {
-		user.Identities = append(user.Identities, *EncodeIdentity(&dbID))
-	}
-
 	return &user
 }
 
@@ -136,14 +132,6 @@ func DecodeUser(user *User) (*database.User, error) {
 		dbUser.LastLogin = user.LastLogin.Time.Unix()
 	}
 
-	for _, id := range user.Identities {
-		dbID, err := DecodeIdentity(&id)
-		if err != nil {
-			return nil, err
-		}
-		dbUser.Identities = append(dbUser.Identities, *dbID)
-	}
-
 	return &dbUser, nil
 }
 
@@ -162,11 +150,6 @@ func EncodeIdentity(dbID *database.Identity) *Identity {
 	if dbID.Activated != 0 {
 		id.Activated.Valid = true
 		id.Activated.Time = time.Unix(dbID.Activated, 0)
-	}
-
-	if dbID.Deactivated != 0 {
-		id.Deactivated.Valid = true
-		id.Deactivated.Time = time.Unix(dbID.Deactivated, 0)
 	}
 
 	return &id
@@ -190,10 +173,6 @@ func DecodeIdentity(id *Identity) (*database.Identity, error) {
 
 	if id.Activated.Valid {
 		dbID.Activated = id.Activated.Time.Unix()
-	}
-
-	if id.Deactivated.Valid {
-		dbID.Deactivated = id.Deactivated.Time.Unix()
 	}
 
 	return &dbID, nil

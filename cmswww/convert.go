@@ -54,7 +54,6 @@ func convertDatabaseUserToUser(user *database.User) v1.User {
 		FailedLoginAttempts:              user.FailedLoginAttempts,
 		Locked:                           IsUserLocked(user.FailedLoginAttempts),
 		EmailNotifications:               user.EmailNotifications,
-		Identities:                       convertDatabaseIdentitiesToIdentities(user.Identities),
 	}
 }
 

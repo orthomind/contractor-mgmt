@@ -46,8 +46,7 @@ type User struct {
 	PaymentAddressIndex                       uint64 `gorm:"not_null"`
 	EmailNotifications                        uint64 `gorm:"not_null"`
 
-	Identities []Identity
-	Invoices   []Invoice
+	Invoices []Invoice
 }
 
 func (u User) TableName() string {
@@ -56,11 +55,11 @@ func (u User) TableName() string {
 
 type Identity struct {
 	Model
-	User        User           `gorm:"foreignkey:UserID"`
-	UserID      uuid.UUID      `gorm:"not_null"`
-	Key         sql.NullString `gorm:"unique"`
-	Activated   pq.NullTime
-	Deactivated pq.NullTime
+	User   User           `gorm:"foreignkey:UserID"`
+	UserID uuid.UUID      `gorm:"not_null"`
+	Key    sql.NullString `gorm:"unique"`
+	// Most recently activated identity is the currently active one
+	Activated pq.NullTime
 }
 
 func (i Identity) TableName() string {

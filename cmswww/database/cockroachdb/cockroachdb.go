@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/badoux/checkmail"
 	"github.com/gofrs/uuid"
@@ -218,6 +219,33 @@ func (c *cockroachdb) GetUsers(username string, page int) ([]database.User, int,
 	}
 
 	return dbUsers, numMatches, nil
+}
+
+// GetActiveIdentity Returns the active identity (if any) of user for provided user ID
+func (c *cockroachdb) GetActiveIdentity(userID uuid.UUID) (*database.Identity, error) {
+	var i *database.Identity
+	err := c.db.Where("activated IS NOT NULL AND user_id=?").Order("activated desc").First(i).Error
+
+	return i, err
+}
+
+// GetPendingIdentity Returns the currently unactivated identity of user for provided user ID that's awaiting approval
+func (c *cockroachdb) GetPendingIdentity(userID uuid.UUID) (*database.Identity, error) {
+	var i *database.Identity
+	err := c.db.Where("user_id = ?", userID).Order("created desc").First(&i).Error
+
+	return i, err
+}
+
+// ActivateIdentity Activates the identity with provided ID
+func (c *cockroachdb) ActivateIdentity(identityID uuid.UUID) error {
+	return c.db.Table("identities").Where("id = ? AND activated IS NULL", identityID).Update("activated", time.Now()).Error
+}
+
+// AddIdentity Adds identity
+func (c *cockroachdb) AddIdentity(dbIdentity database.Identity) error {
+	i := EncodeIdentity(&dbIdentity)
+	return c.db.Create(&i).Error
 }
 
 // Create new invoice.
